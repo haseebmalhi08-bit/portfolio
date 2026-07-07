@@ -47,6 +47,10 @@ function App() {
   const [mousePosition,setMousePosition] = useState({ x: 0, y: 0 });
   const [scrollY,      setScrollY]       = useState(0);
   const [adminOpen,    setAdminOpen]     = useState(false);
+  const [pwdPrompt,    setPwdPrompt]     = useState(false);
+  const [pwdInput,     setPwdInput]      = useState('');
+  const [pwdError,     setPwdError]      = useState(false);
+
 
   // Apply theme + SEO
   useEffect(() => {
@@ -78,11 +82,21 @@ function App() {
         y: (e.clientY / window.innerHeight - 0.5) * 20,
       });
     };
-    // Keyboard shortcut: Ctrl+Shift+E → open admin
+    // Secret keyboard shortcut: Ctrl+Shift+E → password prompt
     const handleKey = (e) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'E') {
         e.preventDefault();
-        setAdminOpen((p) => !p);
+        if (adminOpen) {
+          setAdminOpen(false);
+        } else {
+          setPwdInput('');
+          setPwdError(false);
+          setPwdPrompt(true);
+        }
+      }
+      if (e.key === 'Escape') {
+        setAdminOpen(false);
+        setPwdPrompt(false);
       }
     };
     window.addEventListener('scroll',    handleScroll);
@@ -120,18 +134,44 @@ function App() {
       <Contact    config={config} />
       <Footer     config={config} />
 
-      {/* ── Floating Admin Button ── */}
-      <button
-        id="admin-panel-toggle"
-        className={`admin-fab ${adminOpen ? 'admin-fab-active' : ''}`}
-        onClick={() => setAdminOpen((p) => !p)}
-        title="Edit Portfolio  (Ctrl+Shift+E)"
-      >
-        <span className="admin-fab-icon">✏️</span>
-        <span className="admin-fab-label">Edit</span>
-      </button>
+      {/* ── Password Prompt Modal ── */}
+      {pwdPrompt && (
+        <div className="pwd-overlay" onClick={() => setPwdPrompt(false)}>
+          <div className="pwd-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="pwd-icon">🔐</div>
+            <h3 className="pwd-title">Admin Access</h3>
+            <p className="pwd-subtitle">Enter your password to edit portfolio</p>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              if (pwdInput === config.adminPassword) {
+                setPwdPrompt(false);
+                setPwdInput('');
+                setPwdError(false);
+                setAdminOpen(true);
+              } else {
+                setPwdError(true);
+                setPwdInput('');
+              }
+            }}>
+              <input
+                id="admin-password-input"
+                type="password"
+                className={`pwd-input ${pwdError ? 'pwd-input-error' : ''}`}
+                placeholder="Enter password..."
+                value={pwdInput}
+                onChange={(e) => { setPwdInput(e.target.value); setPwdError(false); }}
+                autoFocus
+              />
+              {pwdError && (
+                <p className="pwd-error">❌ Wrong password! Try again.</p>
+              )}
+              <button type="submit" className="pwd-btn">Unlock ✓</button>
+            </form>
+          </div>
+        </div>
+      )}
 
-      {/* ── Admin Panel ── */}
+      {/* ── Admin Panel (only shown after correct password) ── */}
       {adminOpen && (
         <AdminPanel
           config={config}

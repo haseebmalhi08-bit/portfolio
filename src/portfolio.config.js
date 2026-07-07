@@ -258,6 +258,13 @@ const portfolioConfig = {
       "Haseeb Ur Rehman, React Developer, Three.js, Portfolio, Web Developer Pakistan",
     ogImage: "", // social media preview image URL
   },
+
+  // ----------------------------------------------------------
+  // 🔐 ADMIN PANEL PASSWORD
+  // Sirf tumhara secret password — visitors ko nahi pata chalega
+  // Change this to your own password!
+  // ----------------------------------------------------------
+  adminPassword: "haseeb@admin2024", // ← apna password yahan likhо
 };
 
 export default portfolioConfig;
