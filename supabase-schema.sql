@@ -358,3 +358,4 @@ INSERT INTO public.certificates (title, issuer, issue_date, credential_url, sort
 INSERT INTO public.testimonials (name, role, company, content, rating, sort_order) VALUES
 ('Alex Morgan', 'Product Manager', 'Apex Software', 'Haseeb is an exceptional developer who combines technical mastery with great design sensibility. He delivered our application ahead of schedule with top-notch quality.', 5, 1),
 ('Bilal Ahmed', 'CTO', 'InnoTech Solutions', 'Working with Haseeb was a pleasure. His attention to detail, proactive communication, and ability to craft clean, maintainable code made a massive impact on our project.', 5, 2);
+

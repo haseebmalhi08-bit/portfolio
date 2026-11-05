@@ -30,3 +30,4 @@ export const supabase = createClient(safeUrl, safeKey, {
 });
 
 export default supabase;
+

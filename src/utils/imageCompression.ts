@@ -157,3 +157,4 @@ export async function deleteFromStorage(fileUrl: string): Promise<void> {
     console.warn('Could not delete old file from storage:', err);
   }
 }
+
