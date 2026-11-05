@@ -129,13 +129,12 @@ function App() {
     );
   }
 
-  // Error state — fallback message
+  // Error state — should not happen with static fallback
   if (error || !config) {
     return (
       <div className="app-loading">
-        <div className="error-icon">⚠️</div>
-        <p>Could not connect to server.</p>
-        <small>Make sure the backend is running: <code>cd server &amp;&amp; npm run dev</code></small>
+        <div className="loader-ring"></div>
+        <p>Loading portfolio...</p>
       </div>
     );
   }

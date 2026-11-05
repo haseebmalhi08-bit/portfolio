@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
+import staticConfig from '../portfolio.config.js';
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_BASE = import.meta.env.VITE_API_URL || '';
 
 export function usePortfolioData() {
   const [config, setConfig]   = useState(null);
@@ -12,16 +13,26 @@ export function usePortfolioData() {
   }, []);
 
   async function fetchPortfolio() {
+    // If no backend URL configured, use static config directly
+    if (!API_BASE) {
+      setConfig(staticConfig);
+      setLoading(false);
+      return;
+    }
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch(`${API_BASE}/api/portfolio`);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 5000);
+      const res = await fetch(`${API_BASE}/api/portfolio`, { signal: controller.signal });
+      clearTimeout(timeout);
       if (!res.ok) throw new Error('Failed to fetch portfolio data');
       const data = await res.json();
       setConfig(data);
     } catch (err) {
-      setError(err.message);
-      console.error('Portfolio fetch error:', err);
+      // Backend unavailable — fall back to static config
+      console.warn('Backend unavailable, using static config:', err.message);
+      setConfig(staticConfig);
     } finally {
       setLoading(false);
     }
