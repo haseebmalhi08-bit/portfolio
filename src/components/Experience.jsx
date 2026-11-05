@@ -1,8 +1,9 @@
 import React from 'react';
-import { Briefcase, MapPin, Clock } from 'lucide-react';
+import { MapPin, Clock } from 'lucide-react';
 
 function Experience({ config }) {
   const { experience } = config;
+  if (!experience || experience.length === 0) return null;
 
   return (
     <section id="experience" className="experience-section">
@@ -14,52 +15,24 @@ function Experience({ config }) {
 
         <div className="timeline">
           {experience.map((job, index) => (
-            <div
-              key={index}
-              id={`experience-${index}`}
-              className="timeline-item"
-              style={{ animationDelay: `${index * 0.15}s` }}
-            >
-              {/* Timeline line & dot */}
-              <div className="timeline-connector">
-                <div className="timeline-dot">
-                  <Briefcase size={16} />
+            <div key={index} id={`experience-${index}`} className="timeline-item">
+              <div className="timeline-dot"></div>
+              <div className="timeline-content">
+                <div className="timeline-header">
+                  <span className="timeline-role">{job.role}</span>
+                  {job.type && <span className="timeline-type">{job.type}</span>}
                 </div>
-                {index < experience.length - 1 && (
-                  <div className="timeline-line"></div>
-                )}
-              </div>
-
-              {/* Card */}
-              <div className="timeline-card card-3d">
-                <div className="card-glow"></div>
-
-                <div className="exp-header">
-                  <div>
-                    <h3 className="exp-role">{job.role}</h3>
-                    <p className="exp-company">{job.company}</p>
+                {job.company && <div className="timeline-company">{job.company}</div>}
+                <div className="timeline-meta">
+                  {job.duration && <span><Clock size={12} style={{display:'inline',marginRight:'4px'}} />{job.duration}</span>}
+                  {job.location && <span style={{marginLeft:'1rem'}}><MapPin size={12} style={{display:'inline',marginRight:'4px'}} />{job.location}</span>}
+                </div>
+                {job.description && <p className="timeline-desc">{job.description}</p>}
+                {job.tech && job.tech.length > 0 && (
+                  <div className="timeline-tech">
+                    {job.tech.map((t, i) => <span key={i} className="tech-badge">{t}</span>)}
                   </div>
-                  <span className="exp-type-badge">{job.type}</span>
-                </div>
-
-                <div className="exp-meta">
-                  <span className="exp-meta-item">
-                    <Clock size={14} />
-                    {job.duration}
-                  </span>
-                  <span className="exp-meta-item">
-                    <MapPin size={14} />
-                    {job.location}
-                  </span>
-                </div>
-
-                <p className="exp-description">{job.description}</p>
-
-                <div className="exp-tech">
-                  {job.tech.map((t, i) => (
-                    <span key={i} className="tech-tag">{t}</span>
-                  ))}
-                </div>
+                )}
               </div>
             </div>
           ))}

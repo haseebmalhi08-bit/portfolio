@@ -1,183 +1,213 @@
 import React, { useState, useEffect } from 'react';
+import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { usePortfolioData } from './hooks/usePortfolioData.js';
-import Navbar from './components/Navbar.jsx';
-import Hero from './components/Hero.jsx';
-import About from './components/About.jsx';
-import Skills from './components/Skills.jsx';
-import Services from './components/Services.jsx';
-import Experience from './components/Experience.jsx';
-import Education from './components/Education.jsx';
-import Projects from './components/Projects.jsx';
-import Contact from './components/Contact.jsx';
-import Footer from './components/Footer.jsx';
-import AdminPanel from './components/AdminPanel.jsx';
+import Navbar         from './components/Navbar.jsx';
+import About          from './components/About.jsx';
+import Skills         from './components/Skills.jsx';
+import Services       from './components/Services.jsx';
+import Experience     from './components/Experience.jsx';
+import Education      from './components/Education.jsx';
+import Projects       from './components/Projects.jsx';
+import Certificates   from './components/Certificates.jsx';
+import Contact        from './components/Contact.jsx';
+import Footer         from './components/Footer.jsx';
+import AdminDashboard from './components/AdminDashboard.jsx';
+import Home           from './pages/Home.jsx';
 import './styles.css';
 
-// Apply theme CSS custom properties from config
-function applyTheme(theme) {
-  const root = document.documentElement;
-  root.style.setProperty('--primary',   theme.primaryColor);
-  root.style.setProperty('--secondary', theme.secondaryColor);
-  root.style.setProperty('--accent',    theme.accentColor);
-  root.style.setProperty('--bg-dark',   theme.darkBg);
-  root.style.setProperty('--bg-darker', theme.darkerBg);
-  const hex = theme.primaryColor.replace('#', '');
-  const r = parseInt(hex.slice(0, 2), 16);
-  const g = parseInt(hex.slice(2, 4), 16);
-  const b = parseInt(hex.slice(4, 6), 16);
-  root.style.setProperty('--glow', `rgba(${r},${g},${b},0.5)`);
-}
-
-function applySEO(seo) {
-  document.title = seo.siteTitle;
-  const setMeta = (name, content) => {
-    let el = document.querySelector(`meta[name="${name}"]`);
-    if (!el) { el = document.createElement('meta'); el.name = name; document.head.appendChild(el); }
-    el.content = content;
-  };
-  setMeta('description', seo.description);
-  setMeta('keywords',    seo.keywords);
-}
-
 function App() {
-  const { config, saveSection, resetAll } = usePortfolioData();
+  const { config, loading, error, saveSection, adminLogin, adminLogout, isLoggedIn, sendContactForm } = usePortfolioData();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [isDark,       setIsDark]       = useState(config.theme.defaultMode === 'dark');
-  const [activeSection,setActiveSection] = useState('home');
-  const [mousePosition,setMousePosition] = useState({ x: 0, y: 0 });
-  const [scrollY,      setScrollY]       = useState(0);
-  const [adminOpen,    setAdminOpen]     = useState(false);
-  const [pwdPrompt,    setPwdPrompt]     = useState(false);
-  const [pwdInput,     setPwdInput]      = useState('');
-  const [pwdError,     setPwdError]      = useState(false);
+  const [scrollY,       setScrollY       ] = useState(0);
+  const [adminOpen,     setAdminOpen]     = useState(false);
+  const [pwdPrompt,     setPwdPrompt]     = useState(false);
+  const [pwdInput,      setPwdInput]      = useState('');
+  const [pwdError,      setPwdError]      = useState('');
+  const [pwdLoading,    setPwdLoading]    = useState(false);
+  const [isDark, setIsDark] = useState(() => localStorage.getItem('portfolio-theme') !== 'light');
 
-
-  // Apply theme + SEO
   useEffect(() => {
-    applyTheme(config.theme);
-    applySEO(config.seo);
-  }, [config]);
-
-  // Dark / light mode
-  useEffect(() => {
-    document.documentElement.classList.toggle('light-mode', !isDark);
+    document.body.classList.toggle('light-mode', !isDark);
+    localStorage.setItem('portfolio-theme', isDark ? 'dark' : 'light');
   }, [isDark]);
 
-  // Scroll + mouse tracking
+  const activeSection = location.pathname === '/' ? 'home' : location.pathname.slice(1);
+
   useEffect(() => {
-    const sections = ['home','about','skills','services','experience','education','projects','contact'];
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
+  // Apply SEO when config loads
+  useEffect(() => {
+    if (!config) return;
+    const pageTitle = activeSection === 'home'
+      ? config.seo?.siteTitle
+      : `${activeSection.charAt(0).toUpperCase()}${activeSection.slice(1)} | ${config.personal.name}`;
+    document.title = pageTitle || 'Portfolio';
+    const setMeta = (name, content) => {
+      let el = document.querySelector(`meta[name="${name}"]`);
+      if (!el) { el = document.createElement('meta'); el.name = name; document.head.appendChild(el); }
+      el.content = content;
+    };
+    setMeta('description', config.seo?.description || '');
+    setMeta('keywords',    config.seo?.keywords    || '');
+
+    // Open Graph
+    const setOgMeta = (prop, content) => {
+      let el = document.querySelector(`meta[property="${prop}"]`);
+      if (!el) { el = document.createElement('meta'); el.setAttribute('property', prop); document.head.appendChild(el); }
+      el.content = content;
+    };
+    setOgMeta('og:title',       config.seo?.siteTitle   || '');
+    setOgMeta('og:description', config.seo?.description || '');
+    if (config.seo?.ogImage) setOgMeta('og:image', config.seo.ogImage);
+
+    // Apply theme colors
+    const root = document.documentElement;
+    root.style.setProperty('--primary',   config.theme?.primaryColor   || '#6366f1');
+    root.style.setProperty('--secondary', config.theme?.secondaryColor || '#ec4899');
+    root.style.setProperty('--accent',    config.theme?.accentColor    || '#8b5cf6');
+    root.style.setProperty('--bg-dark',   config.theme?.darkBg         || '#0d0d14');
+    root.style.setProperty('--bg-darker', config.theme?.darkerBg       || '#080810');
+  }, [activeSection, config]);
+
+  // Track scroll position for the fixed navigation.
+  useEffect(() => {
     const handleScroll = () => {
       setScrollY(window.scrollY);
-      const current = sections.find((s) => {
-        const el = document.getElementById(s);
-        if (!el) return false;
-        const r = el.getBoundingClientRect();
-        return r.top <= 120 && r.bottom >= 120;
-      });
-      if (current) setActiveSection(current);
     };
-    const handleMouseMove = (e) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth  - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20,
-      });
-    };
-    // Secret keyboard shortcut: Ctrl+Shift+E → password prompt
+
+    // Keyboard shortcut: Ctrl+Shift+E → admin
     const handleKey = (e) => {
       if (e.ctrlKey && e.shiftKey && e.key === 'E') {
         e.preventDefault();
         if (adminOpen) {
           setAdminOpen(false);
+        } else if (isLoggedIn()) {
+          setAdminOpen(true);
         } else {
           setPwdInput('');
-          setPwdError(false);
+          setPwdError('');
           setPwdPrompt(true);
         }
       }
-      if (e.key === 'Escape') {
-        setAdminOpen(false);
-        setPwdPrompt(false);
-      }
+      if (e.key === 'Escape') { setAdminOpen(false); setPwdPrompt(false); }
     };
-    window.addEventListener('scroll',    handleScroll);
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('keydown',   handleKey);
-    return () => {
-      window.removeEventListener('scroll',    handleScroll);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('keydown',   handleKey);
-    };
-  }, []);
 
-  const scrollToSection = (id) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('keydown', handleKey);
+    return () => { window.removeEventListener('scroll', handleScroll); window.removeEventListener('keydown', handleKey); };
+  }, [adminOpen, isLoggedIn]);
+
+  const navigateToPage = (page) => navigate(page === 'home' ? '/' : `/${page}`);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setPwdLoading(true);
+    setPwdError('');
+    try {
+      await adminLogin(pwdInput);
+      setPwdPrompt(false);
+      setPwdInput('');
+      setAdminOpen(true);
+    } catch (err) {
+      setPwdError(err.message || 'Wrong password!');
+    } finally {
+      setPwdLoading(false);
+    }
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="app-loading">
+        <div className="loader-ring"></div>
+        <p>Loading portfolio...</p>
+      </div>
+    );
+  }
+
+  // Error state — fallback message
+  if (error || !config) {
+    return (
+      <div className="app-loading">
+        <div className="error-icon">⚠️</div>
+        <p>Could not connect to server.</p>
+        <small>Make sure the backend is running: <code>cd server &amp;&amp; npm run dev</code></small>
+      </div>
+    );
+  }
+
   return (
-    <div className={`app ${isDark ? 'dark' : 'light'}`}>
+    <div className="app">
       <Navbar
         config={config}
         scrollY={scrollY}
         activeSection={activeSection}
-        onNavigate={scrollToSection}
-        onThemeToggle={() => setIsDark((p) => !p)}
+        onNavigate={navigateToPage}
         isDark={isDark}
+        onThemeToggle={() => setIsDark(dark => !dark)}
+        onAdminClick={() => {
+          if (isLoggedIn()) {
+            setAdminOpen(true);
+          } else {
+            setPwdInput('');
+            setPwdError('');
+            setPwdPrompt(true);
+          }
+        }}
       />
 
-      <Hero       config={config} mousePosition={mousePosition} onNavigate={scrollToSection} />
-      <About      config={config} />
-      <Skills     config={config} />
-      <Services   config={config} />
-      <Experience config={config} />
-      <Education  config={config} />
-      <Projects   config={config} />
-      <Contact    config={config} />
-      <Footer     config={config} />
+      <main className="route-page">
+        <Routes>
+          <Route path="/" element={<Home config={config} onNavigate={navigateToPage} />} />
+          <Route path="/about" element={<About config={config} />} />
+          <Route path="/skills" element={<Skills config={config} />} />
+          <Route path="/services" element={<Services config={config} />} />
+          <Route path="/experience" element={<Experience config={config} />} />
+          <Route path="/education" element={<Education config={config} />} />
+          <Route path="/projects" element={<Projects config={config} />} />
+          <Route path="/certificates" element={<Certificates config={config} />} />
+          <Route path="/contact" element={<Contact config={config} sendContactForm={sendContactForm} />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </main>
+      <Footer       config={config} />
 
-      {/* ── Password Prompt Modal ── */}
+      {/* Password Prompt */}
       {pwdPrompt && (
-        <div className="pwd-overlay" onClick={() => setPwdPrompt(false)}>
-          <div className="pwd-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="pwd-icon">🔐</div>
-            <h3 className="pwd-title">Admin Access</h3>
-            <p className="pwd-subtitle">Enter your password to edit portfolio</p>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              if (pwdInput === config.adminPassword) {
-                setPwdPrompt(false);
-                setPwdInput('');
-                setPwdError(false);
-                setAdminOpen(true);
-              } else {
-                setPwdError(true);
-                setPwdInput('');
-              }
-            }}>
+        <div className="overlay" onClick={() => setPwdPrompt(false)}>
+          <div className="pwd-modal" onClick={e => e.stopPropagation()}>
+            <div className="pwd-modal-icon">🔐</div>
+            <h3>Admin Access</h3>
+            <p>Enter password to edit portfolio</p>
+            <form onSubmit={handleLogin}>
               <input
-                id="admin-password-input"
                 type="password"
-                className={`pwd-input ${pwdError ? 'pwd-input-error' : ''}`}
+                className={`pwd-input ${pwdError ? 'input-error' : ''}`}
                 placeholder="Enter password..."
                 value={pwdInput}
-                onChange={(e) => { setPwdInput(e.target.value); setPwdError(false); }}
+                onChange={e => { setPwdInput(e.target.value); setPwdError(''); }}
                 autoFocus
               />
-              {pwdError && (
-                <p className="pwd-error">❌ Wrong password! Try again.</p>
-              )}
-              <button type="submit" className="pwd-btn">Unlock ✓</button>
+              {pwdError && <p className="error-msg">{pwdError}</p>}
+              <button type="submit" className="btn-primary" disabled={pwdLoading}>
+                {pwdLoading ? 'Verifying...' : 'Unlock →'}
+              </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* ── Admin Panel (only shown after correct password) ── */}
+      {/* Admin Dashboard */}
       {adminOpen && (
-        <AdminPanel
+        <AdminDashboard
           config={config}
           saveSection={saveSection}
-          resetAll={resetAll}
           onClose={() => setAdminOpen(false)}
+          onLogout={() => { adminLogout(); setAdminOpen(false); }}
         />
       )}
     </div>

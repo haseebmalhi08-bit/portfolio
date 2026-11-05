@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, X, Settings } from 'lucide-react';
 
-function Navbar({ config, scrollY, activeSection, onNavigate, onThemeToggle, isDark }) {
+function Navbar({ config, scrollY, activeSection, onNavigate, onThemeToggle, isDark, onAdminClick }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { personal } = config;
 
-  const navSections = ['home', 'about', 'skills', 'services', 'experience', 'education', 'projects', 'contact'];
+  const navSections = ['home', 'about', 'skills', 'projects', 'experience', 'education', 'certificates', 'services', 'contact'];
 
   const handleNav = (section) => {
     onNavigate(section);
@@ -16,8 +17,8 @@ function Navbar({ config, scrollY, activeSection, onNavigate, onThemeToggle, isD
     <nav className={`navbar ${scrollY > 50 ? 'navbar-scrolled' : ''}`}>
       <div className="navbar-container">
         {/* Logo */}
-        <div className="navbar-logo" onClick={() => handleNav('home')}>
-          <div className="logo-cube">
+        <Link to="/" className="navbar-logo" onClick={() => setIsMenuOpen(false)}>
+          <div className="logo-mark">
             <div className="cube-face front">{personal.logo}</div>
             <div className="cube-face back">{personal.logo}</div>
             <div className="cube-face right">{personal.logo}</div>
@@ -26,7 +27,7 @@ function Navbar({ config, scrollY, activeSection, onNavigate, onThemeToggle, isD
             <div className="cube-face bottom">{personal.logo}</div>
           </div>
           <span className="logo-text">{personal.logoText}</span>
-        </div>
+        </Link>
 
         {/* Desktop Nav */}
         <div className={`navbar-menu ${isMenuOpen ? 'menu-open' : ''}`}>
@@ -35,6 +36,7 @@ function Navbar({ config, scrollY, activeSection, onNavigate, onThemeToggle, isD
               key={section}
               id={`nav-${section}`}
               className={`nav-item ${activeSection === section ? 'nav-active' : ''}`}
+              aria-current={activeSection === section ? 'page' : undefined}
               onClick={() => handleNav(section)}
               style={{ animationDelay: `${index * 0.07}s` }}
             >
@@ -57,6 +59,18 @@ function Navbar({ config, scrollY, activeSection, onNavigate, onThemeToggle, isD
             {isDark ? '☀️' : '🌙'}
           </button>
 
+          {/* Admin Button */}
+          {onAdminClick && (
+            <button
+              id="admin-access-btn"
+              className="admin-access-btn"
+              onClick={onAdminClick}
+              title="Admin Panel (Ctrl+Shift+E)"
+            >
+              <Settings size={18} />
+            </button>
+          )}
+
           {/* Hamburger */}
           <button
             id="menu-toggle"
@@ -75,11 +89,17 @@ function Navbar({ config, scrollY, activeSection, onNavigate, onThemeToggle, isD
             <button
               key={section}
               className={`mobile-nav-item ${activeSection === section ? 'nav-active' : ''}`}
+              aria-current={activeSection === section ? 'page' : undefined}
               onClick={() => handleNav(section)}
             >
               {section.charAt(0).toUpperCase() + section.slice(1)}
             </button>
           ))}
+          {onAdminClick && (
+            <button className="mobile-nav-item mobile-admin-btn" onClick={() => { onAdminClick(); setIsMenuOpen(false); }}>
+              ⚙️ Admin Panel
+            </button>
+          )}
         </div>
       )}
     </nav>

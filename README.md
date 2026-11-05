@@ -1,125 +1,201 @@
-# 🚀 3D Portfolio - Professional Web Portfolio
+# 🚀 Haseeb's Portfolio — Full Stack MERN
 
-A stunning, fully-animated 3D portfolio website built with React, featuring immersive 3D effects, smooth animations, and a modern design.
+A complete, professional portfolio website with a **secure admin panel** built with React + Vite (frontend) and Node.js + Express + MongoDB (backend).
 
 ## ✨ Features
 
-- **3D Animated Navbar** - Rotating cube logo with animated navigation items
-- **Immersive Hero Section** - Floating 3D cubes and parallax effects
-- **3D Card Components** - Interactive cards with depth and hover effects
-- **Smooth Animations** - Professional transitions and micro-interactions
-- **Responsive Design** - Fully responsive across all devices
-- **Modern Tech Stack** - React, Vite, Lucide Icons
-- **Professional UI/UX** - Glassmorphism, gradients, and modern design patterns
+### Public Portfolio
+- **Hero Section** — Name, role, tagline, profile photo, social links
+- **Profile photo editor** — Upload a JPG, PNG, or WebP image in the admin panel; images are resized and saved with your MongoDB portfolio data
+- **About Me** — Bio with animated stats
+- **Skills** — Progress bars grouped by category
+- **Services** — What you offer
+- **Experience** — Work history timeline
+- **Education** — Academic background
+- **Projects** — Filterable grid with tech stack, links, images
+- **Certificates** — Achievement cards with issuer, date, links
+- **Contact** — Phone, email, address, contact form (with Nodemailer)
+- **Dark/Light mode** toggle
+- **Fully responsive** — Mobile, tablet, desktop
+- **Separate portfolio pages** — Home, About, Skills, Experience, Education, Projects, Certificates, Services, and Contact each have a direct page link
 
-## 🎨 Sections
-
-1. **Hero** - Eye-catching introduction with 3D animations
-2. **About** - Personal information and statistics
-3. **Skills** - Animated skill cards with progress bars
-4. **Projects** - Showcase of featured projects with 3D effects
-5. **Contact** - Contact form and information
-
-## 🛠️ Installation
-
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
-
-### Setup
-
-1. Extract the portfolio-3d.zip file
-2. Navigate to the project directory:
-   ```bash
-   cd portfolio-3d
-   ```
-
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-4. Run the development server:
-   ```bash
-   npm run dev
-   ```
-
-5. Open your browser and visit:
-   ```
-   http://localhost:3000
-   ```
-
-## 📦 Build for Production
-
-To create a production build:
-
-```bash
-npm run build
-```
-
-The optimized files will be in the `dist` folder.
-
-## 🎯 Customization
-
-### Update Personal Information
-
-Edit `src/App.jsx` to customize:
-- Personal name and title
-- Skills and expertise levels
-- Project information
-- Contact details
-- Social media links
-
-### Modify Colors
-
-Edit CSS variables in `src/styles.css`:
-```css
-:root {
-  --primary: #6366f1;
-  --secondary: #ec4899;
-  --accent: #8b5cf6;
-  /* ... other colors */
-}
-```
-
-### Add New Sections
-
-Follow the existing section structure in `App.jsx` and add corresponding styles in `styles.css`.
-
-## 🌐 Technologies Used
-
-- **React 18** - UI framework
-- **Vite** - Build tool and dev server
-- **Lucide React** - Icon library
-- **CSS3** - Advanced animations and 3D transforms
-- **Google Fonts** - Orbitron & Space Mono
-
-## 📱 Browser Support
-
-- Chrome (recommended)
-- Firefox
-- Safari
-- Edge
-
-## 🎨 Design Highlights
-
-- **Orbitron** font for headings (futuristic, bold)
-- **Space Mono** font for body text (modern, readable)
-- **3D Transforms** - Extensive use of CSS 3D transforms
-- **Glassmorphism** - Modern frosted glass effects
-- **Gradient Animations** - Dynamic color transitions
-- **Parallax Effects** - Mouse-tracking parallax
-
-## 📄 License
-
-This project is open source and available for personal and commercial use.
-
-## 🤝 Support
-
-For questions or issues, please open an issue on the repository or contact via the portfolio contact form.
+### Admin Panel
+- Accessible via the **⚙️ button** in the navbar, or press **Ctrl+Shift+E**
+- Password-protected with JWT authentication
+- **10 editable sections**: Hero, About, Contact, Skills, Projects, Certificates, Experience, Education, Services, SEO & Theme
+- Mobile-friendly sidebar layout
+- Toast notifications on save
+- Changes **instantly reflect** on the public site
+- Portfolio content and uploaded profile photo are stored in MongoDB, not only in the browser
+- The seed command only creates starter data when the database is empty; it will not overwrite saved portfolio content
 
 ---
 
-**Made with 💜 and cutting-edge web technologies**
+## 🛠️ Tech Stack
 
-Enjoy your stunning 3D portfolio! 🎉
+| Layer      | Technology |
+|-----------|------------|
+| Frontend  | React 18, Vite, Vanilla CSS |
+| Backend   | Node.js, Express.js |
+| Database  | MongoDB (Mongoose) |
+| Auth      | JWT (jsonwebtoken) |
+| Email     | Nodemailer (Gmail) |
+
+---
+
+## 📁 Project Structure
+
+```
+portfolio-3d/
+├── portfolio-3d/          ← Frontend (React + Vite)
+│   ├── src/
+│   │   ├── components/    ← UI components
+│   │   ├── hooks/         ← usePortfolioData (API hook)
+│   │   ├── App.jsx
+│   │   └── styles.css
+│   └── server/            ← Backend (Express + MongoDB)
+│       ├── models/        ← Portfolio schema
+│       ├── routes/        ← API routes
+│       ├── middleware/     ← JWT auth
+│       ├── seed.js        ← DB seed script
+│       ├── index.js       ← Server entry point
+│       └── .env           ← Environment variables
+└── backend/               ← (legacy, can be ignored)
+```
+
+---
+
+## ⚡ Quick Start
+
+### Prerequisites
+- Node.js 18+
+- MongoDB Atlas account (free tier works)
+
+### 1. Clone / Open the Project
+```bash
+cd "portfolio-3d/portfolio-3d"
+```
+
+### 2. Setup Backend
+
+```bash
+cd server
+cp .env.example .env
+```
+
+Edit `.env` and fill in your values:
+```
+MONGODB_URI=mongodb+srv://<user>:<pass>@cluster0.mongodb.net/portfolio
+JWT_SECRET=your_random_secret_here
+ADMIN_PASSWORD=your_admin_password
+PORT=5000
+EMAIL_USER=your_gmail@gmail.com
+EMAIL_PASS=your_gmail_app_password
+```
+
+Install backend dependencies:
+```bash
+npm install
+```
+
+Seed the database with initial data:
+```bash
+npm run seed
+```
+
+Start the backend server:
+```bash
+npm run dev
+```
+✅ Backend runs on `http://localhost:5000`
+
+### 3. Setup Frontend
+
+Open a new terminal:
+```bash
+# From portfolio-3d/ (the Vite root)
+npm install
+npm run dev
+```
+✅ Frontend runs on `http://localhost:3000`
+
+---
+
+## 🔐 Admin Panel Access
+
+1. Click the **⚙️ Settings icon** in the top-right of the navbar
+2. Enter your `ADMIN_PASSWORD` from `.env`
+3. You're in! All changes save directly to MongoDB
+
+**Keyboard shortcut**: `Ctrl + Shift + E` to open/close
+
+> 💡 JWT token expires after **12 hours** — you'll be prompted to log in again.
+
+---
+
+## 📧 Email Setup (Contact Form)
+
+To enable email sending via the contact form:
+
+1. Use a Gmail account
+2. Enable **2-Factor Authentication** on your Google account
+3. Generate an **App Password**: Google Account → Security → App Passwords
+4. Add to your `.env`:
+   ```
+   EMAIL_USER=your_gmail@gmail.com
+   EMAIL_PASS=xxxx xxxx xxxx xxxx
+   ```
+
+If not configured, the contact form still works — it logs the message on the server console.
+
+---
+
+## 🚀 Deployment
+
+### Frontend (Vercel / Netlify)
+```bash
+npm run build
+```
+- Deploy the `dist/` folder
+- Page URLs use hash-based routing, so links such as `/#/education` also work on GitHub Pages
+- Set environment variable: `VITE_API_URL=https://your-backend.render.com`
+
+### Backend (Render / Railway)
+- Connect your Git repo
+- Set all environment variables from `.env`
+- Start command: `npm start`
+- Build command: `npm install`
+
+### Database (MongoDB Atlas)
+- Create a free cluster at [mongodb.com/atlas](https://mongodb.com/atlas)
+- Add your server's IP to the Atlas network allowlist
+- Use the connection string as `MONGODB_URI`
+
+---
+
+## 📝 Customization
+
+Use the **Admin Panel** to update portfolio content, profile photo, theme, and SEO. Changes are saved to MongoDB. Configure the backend in `server/.env` before starting the API.
+
+---
+
+## 🔧 Available Scripts
+
+### Frontend
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start Vite dev server |
+| `npm run build` | Build for production |
+| `npm run preview` | Preview production build |
+
+### Backend (in `server/`)
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start with nodemon (hot reload) |
+| `npm start` | Start production server |
+| `npm run seed` | Seed MongoDB with initial data |
+
+---
+
+## 📄 License
+MIT — free to use and modify.

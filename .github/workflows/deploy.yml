@@ -6,6 +6,8 @@ on:
       - main   # main branch pe push hone par auto deploy
 
 permissions:
+
+  
   contents: read
   pages: write
   id-token: write

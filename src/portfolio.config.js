@@ -29,6 +29,7 @@ const portfolioConfig = {
   contact: {
     email: "haseeb.rehman@example.com",
     phone: "+92-300-1234567",
+    address: "Lahore, Punjab, Pakistan",
     website: "https://haseeb.dev",
   },
 
@@ -36,12 +37,12 @@ const portfolioConfig = {
   // 🔗 SOCIAL MEDIA LINKS
   // ----------------------------------------------------------
   social: {
-    github: "https://github.com/haseebrehman",
-    linkedin: "https://linkedin.com/in/haseebrehman",
-    twitter: "https://twitter.com/haseebrehman",
+    github:    "https://github.com/haseebrehman",
+    linkedin:  "https://linkedin.com/in/haseebrehman",
+    twitter:   "https://twitter.com/haseebrehman",
     instagram: "",  // leave empty to hide
-    youtube: "",    // leave empty to hide
-    facebook: "",   // leave empty to hide
+    youtube:   "",  // leave empty to hide
+    facebook:  "",  // leave empty to hide
   },
 
   // ----------------------------------------------------------
@@ -235,6 +236,34 @@ const portfolioConfig = {
   ],
 
   // ----------------------------------------------------------
+  // 🏆 CERTIFICATES
+  // Add your certificates and achievements here.
+  // ----------------------------------------------------------
+  certificates: [
+    {
+      title: "React - The Complete Guide",
+      issuer: "Udemy",
+      date: "Dec 2023",
+      imageUrl: "",
+      fileUrl: "https://udemy.com/certificate/example",
+    },
+    {
+      title: "Node.js, Express, MongoDB & More",
+      issuer: "Udemy",
+      date: "Jan 2024",
+      imageUrl: "",
+      fileUrl: "",
+    },
+    {
+      title: "JavaScript Algorithms and Data Structures",
+      issuer: "freeCodeCamp",
+      date: "Mar 2023",
+      imageUrl: "",
+      fileUrl: "https://freecodecamp.org/certification/example",
+    },
+  ],
+
+  // ----------------------------------------------------------
   // 🎨 THEME SETTINGS
   // Change these hex colors to completely restyle the portfolio
   // ----------------------------------------------------------
@@ -251,20 +280,13 @@ const portfolioConfig = {
   // 🔍 SEO
   // ----------------------------------------------------------
   seo: {
-    siteTitle: "Haseeb Ur Rehman | Developer & Designer",
-    description:
-      "Portfolio of Haseeb Ur Rehman — Full Stack Developer specializing in 3D web experiences, React, and modern UI/UX.",
-    keywords:
-      "Haseeb Ur Rehman, React Developer, Three.js, Portfolio, Web Developer Pakistan",
-    ogImage: "", // social media preview image URL
+    siteTitle:   "Haseeb Ur Rehman | Developer & Designer",
+    description: "Portfolio of Haseeb Ur Rehman — Full Stack Developer specializing in 3D web experiences, React, and modern UI/UX.",
+    keywords:    "Haseeb Ur Rehman, React Developer, Three.js, Portfolio, Web Developer Pakistan",
+    ogImage:     "", // social media preview image URL
   },
 
   // ----------------------------------------------------------
-  // 🔐 ADMIN PANEL PASSWORD
-  // Sirf tumhara secret password — visitors ko nahi pata chalega
-  // Change this to your own password!
-  // ----------------------------------------------------------
-  adminPassword: "haseeb@admin2024", // ← apna password yahan likhо
 };
 
 export default portfolioConfig;

@@ -5,12 +5,10 @@ function Projects({ config }) {
   const { projects } = config;
   const [filter, setFilter] = useState('all');
 
-  const allTech = [...new Set(projects.flatMap((p) => p.tech))];
+  if (!projects || projects.length === 0) return null;
 
-  const filtered =
-    filter === 'all'
-      ? projects
-      : projects.filter((p) => p.tech.includes(filter));
+  const allTech = [...new Set(projects.flatMap((p) => p.tech || []))].slice(0, 8);
+  const filtered = filter === 'all' ? projects : projects.filter((p) => (p.tech || []).includes(filter));
 
   return (
     <section id="projects" className="projects-section">
@@ -20,19 +18,15 @@ function Projects({ config }) {
           <h2 className="section-title">Featured Projects</h2>
         </div>
 
-        {/* Filter Tabs */}
+        {/* Filter */}
         <div className="project-filters">
-          <button
-            id="filter-all"
-            className={`filter-btn ${filter === 'all' ? 'filter-active' : ''}`}
-            onClick={() => setFilter('all')}
-          >
+          <button id="filter-all" className={`filter-btn ${filter === 'all' ? 'filter-active' : ''}`} onClick={() => setFilter('all')}>
             All
           </button>
           {allTech.map((tech) => (
             <button
               key={tech}
-              id={`filter-${tech.toLowerCase().replace(/\./g, '')}`}
+              id={`filter-${tech.toLowerCase().replace(/[^a-z0-9]/g, '')}`}
               className={`filter-btn ${filter === tech ? 'filter-active' : ''}`}
               onClick={() => setFilter(tech)}
             >
@@ -41,67 +35,38 @@ function Projects({ config }) {
           ))}
         </div>
 
-        {/* Projects Grid */}
         <div className="projects-grid">
           {filtered.map((project, index) => (
-            <div
-              key={index}
-              id={`project-${index}`}
-              className="project-card card-3d"
-              style={{ animationDelay: `${index * 0.15}s` }}
-            >
-              <div className="card-glow"></div>
+            <div key={index} id={`project-${index}`} className="project-card" style={{ animationDelay: `${index * 0.1}s` }}>
 
-              {/* Project Image / Emoji */}
-              <div
-                className="project-image"
-                style={{ background: project.gradient }}
-              >
-                {project.image ? (
-                  <img src={project.image} alt={project.title} className="project-img" />
-                ) : (
-                  <div className="project-emoji">{project.emoji}</div>
-                )}
-                {project.featured && (
-                  <span className="featured-badge">⭐ Featured</span>
-                )}
+              {/* Image / Emoji Banner */}
+              <div className="project-image" style={{ background: project.gradient || 'linear-gradient(135deg,var(--primary),var(--accent))' }}>
+                {project.image
+                  ? <img src={project.image} alt={project.title} className="project-img" />
+                  : <div className="project-emoji">{project.emoji || '🚀'}</div>
+                }
+                {project.featured && <span className="featured-badge">⭐ Featured</span>}
               </div>
 
-              {/* Project Info */}
               <div className="project-content">
                 <h3 className="project-title">{project.title}</h3>
-                <p className="project-description">{project.description}</p>
+                {project.description && <p className="project-description">{project.description}</p>}
 
-                <div className="project-tech">
-                  {project.tech.map((tech, i) => (
-                    <span key={i} className="tech-tag">{tech}</span>
-                  ))}
-                </div>
+                {project.tech && project.tech.length > 0 && (
+                  <div className="project-tech">
+                    {project.tech.map((t, i) => <span key={i} className="tech-tag">{t}</span>)}
+                  </div>
+                )}
 
-                {/* Links */}
                 <div className="project-links">
                   {project.githubLink && (
-                    <a
-                      id={`project-${index}-github`}
-                      href={project.githubLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="project-link project-link-secondary"
-                    >
-                      <Github size={16} />
-                      Code
+                    <a id={`project-${index}-github`} href={project.githubLink} target="_blank" rel="noopener noreferrer" className="project-link project-link-secondary">
+                      <Github size={15} /> Code
                     </a>
                   )}
                   {project.liveLink && (
-                    <a
-                      id={`project-${index}-live`}
-                      href={project.liveLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="project-link project-link-primary"
-                    >
-                      <ExternalLink size={16} />
-                      Live Demo
+                    <a id={`project-${index}-live`} href={project.liveLink} target="_blank" rel="noopener noreferrer" className="project-link project-link-primary">
+                      <ExternalLink size={15} /> Live Demo
                     </a>
                   )}
                 </div>

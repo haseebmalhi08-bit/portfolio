@@ -1,109 +1,53 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Rocket, Mail, Briefcase, ArrowRight } from 'lucide-react';
-import '../styles.css';
+import React from 'react';
+import {
+  ArrowUpRight, Award, BriefcaseBusiness, Code2, GraduationCap, Layers3, Mail, UserRound,
+} from 'lucide-react';
+import Hero from '../components/Hero.jsx';
 
-function Home() {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+const PORTFOLIO_PAGES = [
+  { id: 'about', label: 'About', description: 'A little about my background and approach.', icon: UserRound },
+  { id: 'skills', label: 'Skills', description: 'The tools and technologies I work with.', icon: Code2 },
+  { id: 'projects', label: 'Projects', description: 'Selected work and things I have built.', icon: Layers3 },
+  { id: 'experience', label: 'Experience', description: 'My professional work and experience.', icon: BriefcaseBusiness },
+  { id: 'education', label: 'Education', description: 'My academic background and learning.', icon: GraduationCap },
+  { id: 'certificates', label: 'Certificates', description: 'Professional certifications and achievements.', icon: Award },
+];
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      setMousePosition({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20
-      });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
+function Home({ config, onNavigate }) {
   return (
-    <div className="page-container">
-      <nav className="navbar navbar-home">
-        <div className="navbar-container">
-          <Link to="/" className="navbar-logo">
-            <div className="logo-cube">
-              <div className="cube-face front">H</div>
-              <div className="cube-face back">U</div>
-              <div className="cube-face right">R</div>
-              <div className="cube-face left">E</div>
-              <div className="cube-face top">H</div>
-              <div className="cube-face bottom">A</div>
+    <>
+      <Hero config={config} onNavigate={onNavigate} />
+      <section className="home-explore" aria-labelledby="home-explore-title">
+        <div className="section-container">
+          <div className="home-explore-heading">
+            <div>
+              <span className="section-label">Explore my portfolio</span>
+              <h2 className="section-title" id="home-explore-title">A little more about my work</h2>
             </div>
-            <span className="logo-text">Haseeb</span>
-          </Link>
-
-          <div className="navbar-menu">
-            <Link to="/" className="nav-item nav-active">
-              <span className="nav-item-text">Home</span>
-            </Link>
-            <Link to="/about" className="nav-item">
-              <span className="nav-item-text">About</span>
-            </Link>
-            <Link to="/skills" className="nav-item">
-              <span className="nav-item-text">Skills</span>
-            </Link>
-            <Link to="/projects" className="nav-item">
-              <span className="nav-item-text">Projects</span>
-            </Link>
-            <Link to="/contact" className="nav-item">
-              <span className="nav-item-text">Contact</span>
-            </Link>
+            <button type="button" className="home-contact-link" onClick={() => onNavigate('contact')}>
+              Get in touch <Mail size={16} />
+            </button>
           </div>
-        </div>
-      </nav>
-
-      <section className="page-hero">
-        <div className="hero-background">
-          <div className="floating-cube cube-1"></div>
-          <div className="floating-cube cube-2"></div>
-          <div className="floating-cube cube-3"></div>
-          <div className="grid-overlay"></div>
-        </div>
-
-        <div className="hero-content" style={{
-          transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`
-        }}>
-          <div className="hero-badge">
-            <Rocket size={16} />
-            <span>Available for Projects</span>
-          </div>
-
-          <h1 className="hero-title-3d">
-            <span className="title-word" style={{ animationDelay: '0s' }}>Haseeb</span>
-            <span className="title-word" style={{ animationDelay: '0.2s' }}>Ur</span>
-            <span className="title-word gradient-text" style={{ animationDelay: '0.4s' }}>Rehman</span>
-          </h1>
-
-          <p className="hero-subtitle-3d">
-            Crafting immersive 3D experiences and cutting-edge web applications
-          </p>
-
-          <div className="hero-buttons">
-            <Link to="/projects" className="btn-3d btn-primary">
-              <span className="btn-content">
-                <Briefcase size={20} />
-                View Projects
-              </span>
-              <span className="btn-shine"></span>
-            </Link>
-
-            <Link to="/contact" className="btn-3d btn-secondary">
-              <span className="btn-content">
-                <Mail size={20} />
-                Get in Touch
-              </span>
-              <span className="btn-shine"></span>
-            </Link>
-          </div>
-
-          <div className="scroll-indicator">
-            <p>Click navigation or explore pages</p>
+          <div className="home-explore-grid">
+            {PORTFOLIO_PAGES.map(({ id, label, description, icon: Icon }) => (
+              <button
+                type="button"
+                key={id}
+                className="home-explore-card"
+                onClick={() => onNavigate(id)}
+              >
+                <span className="home-explore-icon"><Icon size={20} /></span>
+                <span className="home-explore-copy">
+                  <span className="home-explore-title">{label}</span>
+                  <span className="home-explore-description">{description}</span>
+                </span>
+                <ArrowUpRight className="home-explore-arrow" size={18} />
+              </button>
+            ))}
           </div>
         </div>
       </section>
-    </div>
+    </>
   );
 }
 

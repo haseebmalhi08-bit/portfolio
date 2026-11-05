@@ -32,5 +32,9 @@ lerna-debug.log*
 *.swo
 *~
 
+# Environment variables (never commit secrets)
+.env
+server/.env
+
 # OS
 Thumbs.db
