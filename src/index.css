@@ -1,0 +1,114 @@
+/* ==============================================================================
+   🎨 THEME & GLOBAL STYLES (MIDNIGHT INDIGO)
+   Lines 15-35: Yahan se aap website ke colors aur background change kar sakte hain!
+   ============================================================================== */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* 🌙 DARK THEME (DEFAULT - MIDNIGHT INDIGO) */
+  :root {
+    /* Backgrounds */
+    --color-bg: #0B0F19;           /* Main page background */
+    --color-surface: #111827;      /* Card & navigation background */
+    --color-surface-hover: #1F2937;/* Card hover background */
+    --color-border: #1F2937;       /* Card borders & dividers */
+
+    /* Typography */
+    --color-text: #E5E7EB;         /* Main headings and body text */
+    --color-muted: #9CA3AF;        /* Subtitles & secondary labels */
+
+    /* Brand Accents */
+    --color-accent: #6366F1;       /* Primary Indigo accent */
+    --color-accent-hover: #4F46E5; /* Button hover state */
+    --color-secondary: #22D3EE;    /* Secondary Cyan accent */
+  }
+
+  /* ☀️ LIGHT THEME */
+  .light {
+    --color-bg: #FFFFFF;
+    --color-surface: #F8FAFC;
+    --color-surface-hover: #F1F5F9;
+    --color-border: #E2E8F0;
+
+    --color-text: #0F172A;
+    --color-muted: #64748B;
+
+    --color-accent: #2563EB;
+    --color-accent-hover: #1D4ED8;
+    --color-secondary: #0891B2;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ==============================================================================
+   ✨ ACCESSIBILITY & PERFORMANCE
+   ============================================================================== */
+
+/* Respect user's motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent);
+}
+
+/* Card Subtle Hover Lift (150-200ms) */
+.card-hover-effect {
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 180ms cubic-bezier(0.16, 1, 0.3, 1), border-color 180ms ease;
+}
+.card-hover-effect:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-accent);
+}
+
+/* Blurred Navigation Header */
+.glass-nav {
+  background: rgba(17, 24, 39, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.light .glass-nav {
+  background: rgba(255, 255, 255, 0.85);
+  border-bottom: 1px solid #E2E8F0;
+}
